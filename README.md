@@ -1,7 +1,3 @@
-# play-number
-le but et que faut retrouver le nombre entre 1 et 100
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,8 +6,11 @@ le but et que faut retrouver le nombre entre 1 et 100
     <title>Document</title>
 </head>
 <body>
+    
+
+
     <div class="game-container">
-        <h1>Jeu avec l'ordinateur</h1>
+        <h1>Trouve le Numéro </h1>
         <div class="input-container">
           <label for="userGuess">Entrez un nombre entre 1 et 100 :</label>
           <input type="number" id="userGuess" min="1" max="100">
@@ -20,13 +19,25 @@ le but et que faut retrouver le nombre entre 1 et 100
         </div>
         <div class="message" id="message"></div>
         <div class="attempts hidden" id="attempts"></div>
-        
+    
+        <div class="scores-container">
+          <h2>Anciens scores</h2>
+          <ul id="scores-list"></ul>
+        </div>
+    
       </div>
     
-      <script>
+
+
+    <script>
         const randomNumber = Math.floor(Math.random() * 100) + 1;
         let attempts = 0;
         const maxAttempts = 7;
+    
+        window.addEventListener('load', () => {
+          const scores = getScoresFromCookies();
+          displayScores(scores);
+        });
     
         function checkGuess() {
           const userGuessInput = document.getElementById('userGuess');
@@ -43,6 +54,8 @@ le but et que faut retrouver le nombre entre 1 et 100
             showSuccessMessage(`Bravo ! Vous avez trouvé le nombre ${randomNumber} en ${attempts} essais.`);
             disableInput();
             showRestartButton();
+            saveScoreToCookies(attempts);
+            displayScores(getScoresFromCookies());
           } else if (attempts === maxAttempts) {
             showFailureMessage(`Désolé, vous avez utilisé toutes vos chances. Le nombre était ${randomNumber}.`);
             disableInput();
@@ -114,9 +127,38 @@ le but et que faut retrouver le nombre entre 1 et 100
           attempts = 0;
           const randomNumber = Math.floor(Math.random() * 100) + 1;
         }
+    
+        function saveScoreToCookies(score) {
+          const scores = getScoresFromCookies();
+          scores.push(score);
+          const serializedScores = JSON.stringify(scores);
+          document.cookie = `scores=${serializedScores}`;
+        }
+    
+        function getScoresFromCookies() {
+          const cookies = document.cookie.split(';');
+          const scoresCookie = cookies.find(cookie => cookie.trim().startsWith('scores='));
+          if (scoresCookie) {
+            const serializedScores = scoresCookie.split('=')[1];
+            return JSON.parse(serializedScores);
+          }
+          return [];
+        }
+    
+        function displayScores(scores) {
+          const scoresList = document.getElementById('scores-list');
+          scoresList.innerHTML = '';
+          scores.forEach(score => {
+            const li = document.createElement('li');
+            li.textContent = `Score: ${score}`;
+            scoresList.appendChild(li);
+          });
+        }
       </script>
 </body>
 </html>
+
+
 <style>
     body {
       font-family: Arial, sans-serif;
@@ -124,7 +166,7 @@ le but et que faut retrouver le nombre entre 1 et 100
       margin: 0;
       padding: 0;
     }
-
+  
     .game-container {
       margin: 50px auto;
       max-width: 400px;
@@ -133,23 +175,23 @@ le but et que faut retrouver le nombre entre 1 et 100
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
       border-radius: 5px;
     }
-
+  
     h1 {
       margin: 0 0 20px;
       color: #333;
     }
-
+  
     .input-container {
       margin-bottom: 20px;
     }
-
+  
     label {
       display: block;
       margin-bottom: 10px;
       font-weight: bold;
       color: #333;
     }
-
+  
     input[type="number"] {
       padding: 5px;
       width: 100px;
@@ -157,7 +199,7 @@ le but et que faut retrouver le nombre entre 1 et 100
       border: 1px solid #ccc;
       border-radius: 5px;
     }
-
+  
     button {
       padding: 8px 16px;
       background-color: #050505;
@@ -167,28 +209,48 @@ le but et que faut retrouver le nombre entre 1 et 100
       font-size: 16px;
       cursor: pointer;
     }
-
+  
     button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
     }
-
+  
     .message {
       margin-bottom: 20px;
       font-size: 18px;
       color: #333;
     }
-
+  
     .success-message {
       color: rgb(4, 4, 4);
     }
-
+  
     .failure-message {
       color: red;
     }
-
+  
     .attempts {
       font-size: 16px;
       color: #333;
     }
+  
+    .scores-container {
+      margin-top: 40px;
+    }
+  
+    .scores-container h2 {
+      margin: 0 0 10px;
+      color: #333;
+    }
+  
+    .scores-container ul {
+      padding: 0;
+      list-style: none;
+    }
+  
+    .scores-container li {
+      margin-bottom: 5px;
+      color: #333;
+    }
   </style>
+  
