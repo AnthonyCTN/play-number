@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/7101c27beb.js" crossorigin="anonymous"></script>
     <title>Document</title>
 </head>
 <body>
@@ -10,9 +11,9 @@
 
 
     <div class="game-container">
-        <h1>Trouve le Numéro </h1>
+        <h1>Trouve le Numéro  </h1>
         <div class="input-container">
-          <label for="userGuess">Entrez un nombre entre 1 et 100 :</label>
+          <label for="userGuess">Entrez un nombre entre 1 et 100 : </label>
           <input type="number" id="userGuess" min="1" max="100">
           <button onclick="checkGuess()">Vérifier</button>
           <button class="restart-button hidden" onclick="restartGame()">Recommencer</button>
@@ -21,8 +22,8 @@
         <div class="attempts hidden" id="attempts"></div>
     
         <div class="scores-container">
-          <h2>Anciens scores</h2>
-          <ul id="scores-list"></ul>
+          <h2>Anciens scores </h2>
+          <ul id="scores-list" > </ul>
         </div>
     
       </div>
@@ -154,6 +155,30 @@
             scoresList.appendChild(li);
           });
         }
+
+
+        function displayScores(scores) {
+  const scoresList = document.getElementById('scores-list');
+  scoresList.innerHTML = '';
+
+  const bestScore = scores.length > 0 ? Math.min(...scores) : null;
+
+  if (bestScore !== null) {
+    const bestScoreLi = document.createElement('li');
+    bestScoreLi.textContent = `Meilleur score:  ${bestScore}`;
+    bestScoreLi.style.fontWeight = 'bold';
+    scoresList.appendChild(bestScoreLi);
+  }
+
+  scores.forEach(score => {
+    if (score !== bestScore) {
+      const li = document.createElement('li');
+      li.textContent = `Score: ${score}`;
+      scoresList.appendChild(li);
+    }
+  });
+}
+
       </script>
 </body>
 </html>
